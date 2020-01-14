@@ -1,6 +1,6 @@
 
 <h1>PowerApps Framwork Component - Google Maps Street View
-<p>A PCF control to render Google Maps Street View, using the location information for an account (lat/long) </p>
+<p>A PCF control to render Google Maps Street View, using the location information for an account (lat/long)</p>
 <p>Control is displayed in a Dynamics365 Account card as a seperate tab shown in the picture below.</p>
 
 <ul>
