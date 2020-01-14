@@ -2,8 +2,7 @@ import {IInputs, IOutputs} from "./generated/ManifestTypes";
 import DataSetInterfaces = ComponentFramework.PropertyHelper.DataSetApi;
 type DataSet = ComponentFramework.PropertyTypes.DataSet;
 import * as $ from "jquery";
-declare const MarkerClusterer: any;
-
+declare const Xrm: any;
 interface mapOptions {
     zoom: number;
     scrollwheel: boolean;
@@ -19,7 +18,10 @@ export class GoogleMapsStreetView implements ComponentFramework.StandardControl<
 	private _notifyOutputChanged: () => void;
 	private _htmlDivElement: HTMLDivElement;
 	private _mapDiv: HTMLDivElement;
+	private _pano: HTMLDivElement;
 	private mapCanvas: any;
+	private panoCanvas: any;
+	private panorama: any;
 	private gMap: google.maps.Map;
 	private markerClusterer: any;
 	public mapOptions: mapOptions;
@@ -36,11 +38,11 @@ export class GoogleMapsStreetView implements ComponentFramework.StandardControl<
 
 		$( document ).ready(() => {
 			this.addGoogleScriptToHeader(this._context);
-
-			this._mapDiv = document.createElement("div");
-			this._mapDiv.setAttribute("id", "map");
-			this._mapDiv.setAttribute("style", "position:relative;width:100%;height:80vh;border-style: solid;margin:auto;");
-			this._container.appendChild(this._mapDiv);
+			
+			this._pano = document.createElement("div");
+			this._pano.setAttribute("id", "pano");
+			this._pano.setAttribute("style", "position:relative;width:100%;height:80vh;border-style: solid;margin:auto;");
+			this._container.appendChild(this._pano);
 			
 			//Associate controls to container
 			container.appendChild(this._container);
@@ -49,26 +51,27 @@ export class GoogleMapsStreetView implements ComponentFramework.StandardControl<
 
 	public initMap() {	
 		if(google !== null && google !== undefined) {
-			this.mapCanvas = document.getElementById('map');
-			if (this.mapCanvas !== null && this.mapCanvas !== undefined){
+			console.log('init pano map');
+			this.panoCanvas = document.getElementById('pano');
+			if (this.panoCanvas !== null && this.panoCanvas !== undefined){
+				const fenway = {lat: 42.345573, lng: -71.098326};
 				const mapOptions = {
-					zoom: 3,
-					center: new google.maps.LatLng(0, 0),
-					panControl: true,
-    				mapTypeControl: true,
-					zoomControl: true,
-					zoomControlOptions: {
-						position: google.maps.ControlPosition.LEFT_TOP,
-					},
-					mapTypeControlOptions: {
-						style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
-					}
+					zoom: 14,
+					center: fenway,
 				}	
-				this.gMap = new google.maps.Map(this.mapCanvas, mapOptions);	
+				
+				this.gMap = new google.maps.Map(this.panoCanvas, mapOptions);
+				this.panorama = new google.maps.StreetViewPanorama(
+					this.panoCanvas, {
+					  position: fenway,
+					  pov: {
+						heading: 34,
+						pitch: 10
+					  }
+					});
+				this.gMap.setStreetView(this.panorama);
 			}
 		}
-		 //Associate controls to container
-		 //this._container.appendChild(this._htmlDivElement);
 	}
 
 	public getCurrentLocation() {
@@ -94,7 +97,7 @@ export class GoogleMapsStreetView implements ComponentFramework.StandardControl<
 	}
 
 	public addGoogleScriptToHeader(context: any): void {
-		const apiKey = context.parameters.googleMapsAPIKey.raw != null && context.parameters.googleMapsAPIKey.raw != "val" ? context.parameters.googleMapsAPIKey.raw : "";
+		//const apiKey = context.parameters.googleMapsAPIKey.raw != null && context.parameters.googleMapsAPIKey.raw != "val" ? context.parameters.googleMapsAPIKey.raw : "";
 		let headerScript: HTMLScriptElement = document.createElement("script");
         headerScript.type = 'text/javascript';
         headerScript.id = "GoogleHeaderScript";
@@ -109,8 +112,11 @@ export class GoogleMapsStreetView implements ComponentFramework.StandardControl<
 		console.log("update view called");
 		$( document ).ready(() => {
 			setTimeout(() => {
+				// const dt = Xrm.Page.data.entity;
+				// console.log(dt);
+
 				this.initMap();
-				this.getCurrentLocation();
+				//this.getCurrentLocation();
 			}, 500);			
 		});
 	}
