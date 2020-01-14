@@ -5,7 +5,6 @@
   
  
 <ul>
-  <li>The control uses the columns in the view to display an information window when a location marker is clicked.</li>
   <li>The street view maps request for the current accounts lat/long when loaded.</li>
 </ul>
 
