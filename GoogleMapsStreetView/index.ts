@@ -26,6 +26,8 @@ export class GoogleMapsStreetView implements ComponentFramework.StandardControl<
 	private markerClusterer: any;
 	public mapOptions: mapOptions;
 	public markers: any = [];
+	private address1_latitude: any;
+	private address1_longitude: any;
 
 	constructor(public container: HTMLDivElement) {
 	}
@@ -54,13 +56,14 @@ export class GoogleMapsStreetView implements ComponentFramework.StandardControl<
 			console.log('init pano map');
 			this.panoCanvas = document.getElementById('pano');
 			if (this.panoCanvas !== null && this.panoCanvas !== undefined){
-				const fenway = {lat: 42.345573, lng: -71.098326};
-				const mapOptions = {
+				// const fenway = {lat: 42.345573, lng: -71.098326};
+				const fenway = {lat: this.address1_latitude, lng: this.address1_longitude};
+				const panoMapOptions = {
 					zoom: 14,
 					center: fenway,
 				}	
 				
-				this.gMap = new google.maps.Map(this.panoCanvas, mapOptions);
+				this.gMap = new google.maps.Map(this.panoCanvas, panoMapOptions);
 				this.panorama = new google.maps.StreetViewPanorama(
 					this.panoCanvas, {
 					  position: fenway,
@@ -74,30 +77,9 @@ export class GoogleMapsStreetView implements ComponentFramework.StandardControl<
 		}
 	}
 
-	public getCurrentLocation() {
-		const self = this;
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition((position) => {
-                // const pos = {
-                //     lat: position.coords.latitude,
-                //     lng: position.coords.longitude
-				// };
-				const pos = {
-                    lat: 37.090240,
-                    lng: -95.712891
-                };
-                self.gMap.setCenter(pos);
-				self.mapOptions.center = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-
-            }, function () {
-                //handleLocationError(true, infoWindow, map.getCenter());
-                //do nothing because we have set the center as 0 0 as a backup
-			});			
-        }
-	}
-
 	public addGoogleScriptToHeader(context: any): void {
 		//const apiKey = context.parameters.googleMapsAPIKey.raw != null && context.parameters.googleMapsAPIKey.raw != "val" ? context.parameters.googleMapsAPIKey.raw : "";
+		const apiKey = 'AIzaSyBoMGRU_N3jvF6hXHfDz0lGyk9UHBx9PMk';
 		let headerScript: HTMLScriptElement = document.createElement("script");
         headerScript.type = 'text/javascript';
         headerScript.id = "GoogleHeaderScript";
@@ -114,10 +96,29 @@ export class GoogleMapsStreetView implements ComponentFramework.StandardControl<
 			setTimeout(() => {
 				// const dt = Xrm.Page.data.entity;
 				// console.log(dt);
+				this.getCurrentAccountLocation().then((result: any) => {
+					if(result!==null && result !== undefined){
+						this.initMap();
+					}
+				})
 
-				this.initMap();
-				//this.getCurrentLocation();
 			}, 500);			
+		});
+	}
+
+	public getCurrentAccountLocation() {
+		return new Promise(async (resolve) => {
+			const self = this;
+			if(Xrm !== null && Xrm !== undefined){
+				this.address1_latitude = Xrm.Page.data.entity.attributes.getByName("address1_latitude").getValue();
+				this.address1_longitude = Xrm.Page.data.entity.attributes.getByName("address1_longitude").getValue();
+
+				var obj = {
+					address1_latitude: this.address1_latitude,
+					address1_longitude: this.address1_longitude
+				}
+				resolve(obj);
+			}
 		});
 	}
 	
