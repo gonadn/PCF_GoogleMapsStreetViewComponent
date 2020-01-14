@@ -78,8 +78,8 @@ export class GoogleMapsStreetView implements ComponentFramework.StandardControl<
 	}
 
 	public addGoogleScriptToHeader(context: any): void {
-		//const apiKey = context.parameters.googleMapsAPIKey.raw != null && context.parameters.googleMapsAPIKey.raw != "val" ? context.parameters.googleMapsAPIKey.raw : "";
-		const apiKey = 'AIzaSyBoMGRU_N3jvF6hXHfDz0lGyk9UHBx9PMk';
+		const apiKey = context.parameters.googleMapsAPIKey.raw != null && context.parameters.googleMapsAPIKey.raw != "val" ? context.parameters.googleMapsAPIKey.raw : "";
+		
 		let headerScript: HTMLScriptElement = document.createElement("script");
         headerScript.type = 'text/javascript';
         headerScript.id = "GoogleHeaderScript";
