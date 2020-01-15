@@ -78,8 +78,13 @@ export class GoogleMapsStreetView implements ComponentFramework.StandardControl<
 	}
 
 	public addGoogleScriptToHeader(context: any): void {
+<<<<<<< HEAD
 		//const apiKey = context.parameters.googleMapsAPIKey.raw != null && context.parameters.googleMapsAPIKey.raw != "val" ? context.parameters.googleMapsAPIKey.raw : "";
 		const apiKey = 'AIzaSyBoMGRU_N3jvF6hXHfDz0lGyk9UHBx9PMk';
+=======
+		const apiKey = context.parameters.googleMapsAPIKey.raw != null && context.parameters.googleMapsAPIKey.raw != "val" ? context.parameters.googleMapsAPIKey.raw : "";
+		
+>>>>>>> ef4b9e70122bba04c756933883a47e8dc8d98e5a
 		let headerScript: HTMLScriptElement = document.createElement("script");
         headerScript.type = 'text/javascript';
         headerScript.id = "GoogleHeaderScript";
@@ -93,11 +98,19 @@ export class GoogleMapsStreetView implements ComponentFramework.StandardControl<
 	{
 		$( document ).ready(() => {
 			setTimeout(() => {
+<<<<<<< HEAD
 				this.getCurrentAccountLocation().then((result: any) => {
 					if(result!==null && result !== undefined){
 						if(result.address1_latitude !== null && result.address1_longitude){
 							this.initMap();
 						}
+=======
+				// const dt = Xrm.Page.data.entity;
+				// console.log(dt);
+				this.getCurrentAccountLocation().then((result: any) => {
+					if(result!==null && result !== undefined){
+						this.initMap();
+>>>>>>> ef4b9e70122bba04c756933883a47e8dc8d98e5a
 					}
 				})
 
