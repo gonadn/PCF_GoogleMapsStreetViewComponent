@@ -91,14 +91,13 @@ export class GoogleMapsStreetView implements ComponentFramework.StandardControl<
 
 	public updateView(context: ComponentFramework.Context<IInputs>): void
 	{
-		console.log("update view called");
 		$( document ).ready(() => {
 			setTimeout(() => {
-				// const dt = Xrm.Page.data.entity;
-				// console.log(dt);
 				this.getCurrentAccountLocation().then((result: any) => {
 					if(result!==null && result !== undefined){
-						this.initMap();
+						if(result.address1_latitude !== null && result.address1_longitude){
+							this.initMap();
+						}
 					}
 				})
 
